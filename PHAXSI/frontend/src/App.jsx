@@ -1,37 +1,54 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, AuthContext } from './context/AuthContext';
-import { Navbar } from './components/Navbar';
-import { Login } from './pages/Login';
-import { Dashboard } from './pages/Dashboard';
-import { PrimerosAuxilios } from './pages/PrimerosAuxilios';
-import { CrisisPage } from './pages/CrisisPage';
+import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
+import ErrorBoundary from './components/ErrorBoundary';
+import ProtectedRoute from './components/ProtectedRoute';
+import MedicamentosPage from './pages/MedicamentosPage';
+import ContactosPage from './pages/ContactosPage';
+import PlanSeguridadPage from './pages/PlanSeguridadPage';
+import './styles/App.css';
 
-const ProtectedRoute = ({ children }) => {
-    const { usuario, cargando } = React.useContext(AuthContext);
-    if (cargando) return <div>Cargando...</div>;
-    return usuario ? children : <Navigate to="/login" />;
-};
-
-function App() {
+export default function App() {
     return (
-        <AuthProvider>
-            <Router>
-                <div className="app-container">
-                    <Navbar />
-                    <main className="main-content">
+        <BrowserRouter>
+            <ErrorBoundary>
+                <div className="phaxsi-layout">
+                    <header className="phaxsi-header">
+                        <h1>PHAXSI</h1>
+                        <nav className="phaxsi-nav">
+                            <NavLink to="/medicamentos" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                                Medicamentos
+                            </NavLink>
+                            <NavLink to="/contactos" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                                Contactos
+                            </NavLink>
+                            <NavLink to="/plan-seguridad" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                                Plan de seguridad
+                            </NavLink>
+                        </nav>
+                    </header>
+                    <main className="phaxsi-main">
                         <Routes>
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/primeros-auxilios" element={<PrimerosAuxilios />} />
-                            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                            <Route path="/crisis" element={<ProtectedRoute><CrisisPage /></ProtectedRoute>} />
-                            <Route path="/" element={<Navigate to="/dashboard" />} />
+                            <Route path="/" element={<Navigate to="/medicamentos" replace />} />
+                            <Route path="/medicamentos" element={
+                                <ProtectedRoute>
+                                    <MedicamentosPage />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="/contactos" element={
+                                <ProtectedRoute>
+                                    <ContactosPage />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="/plan-seguridad" element={
+                                <ProtectedRoute>
+                                    <PlanSeguridadPage />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="*" element={<div style={{ padding: '2rem' }}><h2>404 - Página no encontrada</h2></div>} />
                         </Routes>
                     </main>
                 </div>
-            </Router>
-        </AuthProvider>
+            </ErrorBoundary>
+        </BrowserRouter>
     );
 }
-
-export default App;
