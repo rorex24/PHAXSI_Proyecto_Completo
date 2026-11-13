@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const bycrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const registrar = async (req, res) => {
