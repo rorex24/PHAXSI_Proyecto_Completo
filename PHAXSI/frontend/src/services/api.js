@@ -8,6 +8,12 @@ const getHeaders = () => {
     };
 };
 
+const handleResponse = async (res) => {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.mensaje || 'Error en la solicitud');
+    return data;
+};
+
 export const loginUsuario = async (email, password) => {
     const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -44,30 +50,93 @@ export const crearCrisis = async (datos) => {
     return await res.json();
 };
 
-export const fetchMedicamentos = async () => {
+// Medicamentos
+export const apiListarMedicamentos = async () => {
     const res = await fetch(`${API_URL}/medicamentos`, { headers: getHeaders() });
-    return await res.json();
+    return handleResponse(res);
 };
 
-export const crearMedicamento = async (datos) => {
+export const apiCrearMedicamento = async (payload) => {
     const res = await fetch(`${API_URL}/medicamentos`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify(datos)
+        body: JSON.stringify(payload)
     });
-    return await res.json();
+    return handleResponse(res);
 };
 
-export const fetchContactos = async () => {
+export const apiActualizarMedicamento = async (id, payload) => {
+    const res = await fetch(`${API_URL}/medicamentos/${id}`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify(payload)
+    });
+    return handleResponse(res);
+};
+
+export const apiEliminarMedicamento = async (id) => {
+    const res = await fetch(`${API_URL}/medicamentos/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+    });
+    return handleResponse(res);
+};
+
+export const apiRegistrarToma = async (id) => {
+    const res = await fetch(`${API_URL}/medicamentos/${id}/tomar`, {
+        method: 'POST',
+        headers: getHeaders()
+    });
+    return handleResponse(res);
+};
+
+// Contactos
+export const apiListarContactos = async () => {
     const res = await fetch(`${API_URL}/contactos`, { headers: getHeaders() });
-    return await res.json();
+    return handleResponse(res);
 };
 
-export const crearContacto = async (datos) => {
+export const apiCrearContacto = async (payload) => {
     const res = await fetch(`${API_URL}/contactos`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify(datos)
+        body: JSON.stringify(payload)
     });
-    return await res.json();
+    return handleResponse(res);
 };
+
+export const apiActualizarContacto = async (id, payload) => {
+    const res = await fetch(`${API_URL}/contactos/${id}`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify(payload)
+    });
+    return handleResponse(res);
+};
+
+export const apiEliminarContacto = async (id) => {
+    const res = await fetch(`${API_URL}/contactos/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+    });
+    return handleResponse(res);
+};
+
+// Plan de Seguridad
+export const apiObtenerPlanSeguridad = async () => {
+    const res = await fetch(`${API_URL}/plan-seguridad`, { headers: getHeaders() });
+    return handleResponse(res);
+};
+
+export const apiGuardarPlanSeguridad = async (payload) => {
+    const res = await fetch(`${API_URL}/plan-seguridad`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify(payload)
+    });
+    return handleResponse(res);
+};
+
+// Alias usados por el Dashboard
+export const fetchMedicamentos = apiListarMedicamentos;
+export const fetchContactos = apiListarContactos;

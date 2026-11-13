@@ -67,3 +67,17 @@ CREATE TABLE IF NOT EXISTS contactos_emergencia (
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
+-- Tabla para el Plan de Seguridad en epilepsia
+CREATE TABLE IF NOT EXISTS plan_seguridad (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL UNIQUE,
+    pasos_crisis TEXT,
+    cuando_llamar TEXT,
+    desencadenantes TEXT,
+    medico_nombre VARCHAR(150),
+    medico_telefono VARCHAR(50),
+    hospital_referencia VARCHAR(200),
+    notas TEXT,
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
