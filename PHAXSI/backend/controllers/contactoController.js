@@ -4,7 +4,7 @@ const listarContactos = async (req, res) => {
     try {
         const usuario_id = req.user.id;
         const [rows] = await db.query(
-            'SELECT * FROM contactos_emergencia WHERE usuario_id = ? ORDER BY es_principal DESC, id DESC',
+            'SELECT id, usuario_id, nombre, parentesco, telefono, es_prioritario AS es_principal, creado_en FROM contactos_emergencia WHERE usuario_id = ? ORDER BY es_prioritario DESC, id DESC',
             [usuario_id]
         );
         res.json(rows);
@@ -26,11 +26,11 @@ const crearContacto = async (req, res) => {
         const principalFlag = es_principal ? 1 : 0;
 
         if (principalFlag === 1) {
-            await db.query('UPDATE contactos_emergencia SET es_principal = 0 WHERE usuario_id = ?', [usuario_id]);
+            await db.query('UPDATE contactos_emergencia SET es_prioritario = 0 WHERE usuario_id = ?', [usuario_id]);
         }
 
         const [result] = await db.query(
-            'INSERT INTO contactos_emergencia (usuario_id, nombre, parentesco, telefono, es_principal) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO contactos_emergencia (usuario_id, nombre, parentesco, telefono, es_prioritario) VALUES (?, ?, ?, ?, ?)',
             [usuario_id, nombre, parentesco || '', telefono, principalFlag]
         );
 
@@ -59,11 +59,11 @@ const actualizarContacto = async (req, res) => {
         const principalFlag = es_principal ? 1 : 0;
 
         if (principalFlag === 1) {
-            await db.query('UPDATE contactos_emergencia SET es_principal = 0 WHERE usuario_id = ?', [usuario_id]);
+            await db.query('UPDATE contactos_emergencia SET es_prioritario = 0 WHERE usuario_id = ?', [usuario_id]);
         }
 
         await db.query(
-            'UPDATE contactos_emergencia SET nombre = ?, parentesco = ?, telefono = ?, es_principal = ? WHERE id = ? AND usuario_id = ?',
+            'UPDATE contactos_emergencia SET nombre = ?, parentesco = ?, telefono = ?, es_prioritario = ? WHERE id = ? AND usuario_id = ?',
             [nombre, parentesco || '', telefono, principalFlag, id, usuario_id]
         );
 

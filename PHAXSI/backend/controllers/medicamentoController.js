@@ -4,7 +4,7 @@ const listarMedicamentos = async (req, res) => {
     try {
         const usuario_id = req.user.id;
         const [rows] = await db.query(
-            'SELECT * FROM medicamentos WHERE usuario_id = ? ORDER BY id DESC',
+            'SELECT id, usuario_id, nombre_medicamento AS nombre, dosis, frecuencia, horarios, instrucciones AS indicaciones, activo, creado_en FROM medicamentos WHERE usuario_id = ? ORDER BY id DESC',
             [usuario_id]
         );
         res.json(rows);
@@ -24,7 +24,7 @@ const crearMedicamento = async (req, res) => {
         }
 
         const [result] = await db.query(
-            'INSERT INTO medicamentos (usuario_id, nombre, dosis, frecuencia, horarios, indicaciones) VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT INTO medicamentos (usuario_id, nombre_medicamento, dosis, frecuencia, horarios, instrucciones) VALUES (?, ?, ?, ?, ?, ?)',
             [usuario_id, nombre, dosis || '', frecuencia || '', horarios || '', indicaciones || '']
         );
 
@@ -51,7 +51,7 @@ const actualizarMedicamento = async (req, res) => {
         }
 
         await db.query(
-            'UPDATE medicamentos SET nombre = ?, dosis = ?, frecuencia = ?, horarios = ?, indicaciones = ? WHERE id = ? AND usuario_id = ?',
+            'UPDATE medicamentos SET nombre_medicamento = ?, dosis = ?, frecuencia = ?, horarios = ?, instrucciones = ? WHERE id = ? AND usuario_id = ?',
             [nombre, dosis || '', frecuencia || '', horarios || '', indicaciones || '', id, usuario_id]
         );
 
@@ -92,8 +92,8 @@ const registrarToma = async (req, res) => {
         }
 
         await db.query(
-            'INSERT INTO registros_medicamentos (medicamento_id, usuario_id, fecha_hora) VALUES (?, ?, ?)',
-            [id, usuario_id, fecha_hora]
+            'INSERT INTO registros_medicamentos (medicamento_id, fecha_hora) VALUES (?, ?)',
+            [id, fecha_hora]
         );
 
         res.status(201).json({ mensaje: 'Toma registrada exitosamente', fecha_hora });
