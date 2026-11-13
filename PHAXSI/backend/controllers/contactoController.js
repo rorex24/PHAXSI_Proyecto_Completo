@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-exports.listarContactos = async (req, res) => {
+const listarContactos = async (req, res) => {
     try {
         const usuario_id = req.user.id;
         const [rows] = await db.query(
@@ -14,7 +14,7 @@ exports.listarContactos = async (req, res) => {
     }
 };
 
-exports.crearContacto = async (req, res) => {
+const crearContacto = async (req, res) => {
     try {
         const usuario_id = req.user.id;
         const { nombre, parentesco, telefono, es_principal } = req.body;
@@ -41,7 +41,7 @@ exports.crearContacto = async (req, res) => {
     }
 };
 
-exports.actualizarContacto = async (req, res) => {
+const actualizarContacto = async (req, res) => {
     try {
         const usuario_id = req.user.id;
         const { id } = req.params;
@@ -74,7 +74,7 @@ exports.actualizarContacto = async (req, res) => {
     }
 };
 
-exports.eliminarContacto = async (req, res) => {
+const eliminarContacto = async (req, res) => {
     try {
         const usuario_id = req.user.id;
         const { id } = req.params;
@@ -90,4 +90,11 @@ exports.eliminarContacto = async (req, res) => {
         console.error('Error al eliminar contacto:', error);
         res.status(500).json({ mensaje: 'Error al eliminar el contacto', error: error.message });
     }
+};
+
+module.exports = {
+    listarContactos,
+    crearContacto,
+    actualizarContacto,
+    eliminarContacto
 };

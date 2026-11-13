@@ -1,10 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const contactoController = require('../controllers/contactoController');
-const { verificarToken } = require('../middlewares/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
+const {
+    listarContactos,
+    crearContacto,
+    actualizarContacto,
+    eliminarContacto
+} = require('../controllers/contactoController');
 
-router.get('/', verificarToken, contactoController.obtenerContactos);
-router.post('/', verificarToken, contactoController.crearContacto);
-router.delete('/:id', verificarToken, contactoController.eliminarContacto);
+router.use(authMiddleware);
 
+router.get('/', listarContactos);
+router.post('/', crearContacto);
+router.put('/:id', actualizarContacto);
+router.delete('/:id', eliminarContacto);
+
+// DEBE SER EXACTAMENTE ESTO (sin llaves alrededor)
 module.exports = router;
