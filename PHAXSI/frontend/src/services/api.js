@@ -1,4 +1,4 @@
-const API_URL = 'http://10.168.162.186:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.1.157:5000/api';
 
 const getHeaders = () => {
     const token = localStorage.getItem('token');
