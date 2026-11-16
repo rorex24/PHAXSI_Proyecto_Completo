@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { Contacto } from '../types';
 import {
     apiListarContactos,
     apiCrearContacto,
@@ -7,12 +8,12 @@ import {
 } from '../services/api';
 
 export default function ContactosPage() {
-    const [contactos, setContactos] = useState([]);
+    const [contactos, setContactos] = useState<Contacto[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState('');
     const [showForm, setShowForm] = useState(false);
-    const [editId, setEditId] = useState(null);
+    const [editId, setEditId] = useState<number | null>(null);
     const [form, setForm] = useState({ nombre: '', parentesco: '', telefono: '', es_principal: false });
 
     const cargarContactos = async () => {
@@ -22,7 +23,8 @@ export default function ContactosPage() {
             const data = await apiListarContactos();
             setContactos(data);
         } catch (err) {
-            setError(err.message || 'Error al cargar contactos');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al cargar contactos');
         } finally {
             setLoading(false);
         }
@@ -32,12 +34,12 @@ export default function ContactosPage() {
         cargarContactos();
     }, []);
 
-    const validarTelefono = (tel) => {
+    const validarTelefono = (tel: string) => {
         const regex = /^\+?[0-9\s\-]{7,15}$/;
         return regex.test(tel);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!form.nombre.trim() || !form.telefono.trim()) {
             setError('El nombre y el teléfono son obligatorios');
@@ -63,11 +65,12 @@ export default function ContactosPage() {
             cargarContactos();
             setTimeout(() => setMensajeExito(''), 3000);
         } catch (err) {
-            setError(err.message || 'Error al guardar el contacto');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al guardar el contacto');
         }
     };
 
-    const handleEditar = (con) => {
+    const handleEditar = (con: Contacto) => {
         setForm({
             nombre: con.nombre || '',
             parentesco: con.parentesco || '',
@@ -78,7 +81,7 @@ export default function ContactosPage() {
         setShowForm(true);
     };
 
-    const handleEliminar = async (id) => {
+    const handleEliminar = async (id: number) => {
         if (!window.confirm('¿Estás seguro de eliminar este contacto?')) return;
         try {
             setError(null);
@@ -87,7 +90,8 @@ export default function ContactosPage() {
             cargarContactos();
             setTimeout(() => setMensajeExito(''), 3000);
         } catch (err) {
-            setError(err.message || 'Error al eliminar');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al eliminar');
         }
     };
 

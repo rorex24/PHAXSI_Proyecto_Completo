@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import type { PlanSeguridad } from '../types';
 import { apiObtenerPlanSeguridad, apiGuardarPlanSeguridad } from '../services/api';
 
 export default function PlanSeguridadPage() {
-    const [plan, setPlan] = useState({
+    const [plan, setPlan] = useState<PlanSeguridad>({
         pasos_crisis: '',
         cuando_llamar: '',
         desencadenantes: '',
@@ -12,7 +13,7 @@ export default function PlanSeguridadPage() {
         notas: ''
     });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState('');
     const [editMode, setEditMode] = useState(false);
 
@@ -31,7 +32,8 @@ export default function PlanSeguridadPage() {
                 notas: data.notas || ''
             });
         } catch (err) {
-            setError(err.message || 'Error al cargar el plan de seguridad');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al cargar el plan de seguridad');
         } finally {
             setLoading(false);
         }
@@ -41,7 +43,7 @@ export default function PlanSeguridadPage() {
         cargarPlan();
     }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             setError(null);
@@ -50,7 +52,8 @@ export default function PlanSeguridadPage() {
             setEditMode(false);
             setTimeout(() => setMensajeExito(''), 3000);
         } catch (err) {
-            setError(err.message || 'Error al guardar el plan de seguridad');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al guardar el plan de seguridad');
         }
     };
 

@@ -1,20 +1,22 @@
-const db = require('../config/db');
+import type { ResultSetHeader, RowDataPacket } from 'mysql2';
+import type { Request, Response } from 'express';
+import db from '../config/db';
 
-const listarContactos = async (req, res) => {
+const listarContactos = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
-        const [rows] = await db.query(
+        const [rows] = await db.query<RowDataPacket[]>(
             'SELECT id, usuario_id, nombre, parentesco, telefono, es_prioritario AS es_principal, creado_en FROM contactos_emergencia WHERE usuario_id = ? ORDER BY es_prioritario DESC, id DESC',
             [usuario_id]
         );
         res.json(rows);
     } catch (error) {
         console.error('Error al listar contactos:', error);
-        res.status(500).json({ mensaje: 'Error al obtener los contactos de emergencia', error: error.message });
+        res.status(500).json({ mensaje: 'Error al obtener los contactos de emergencia', error: (error as Error).message });
     }
 };
 
-const crearContacto = async (req, res) => {
+const crearContacto = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const { nombre, parentesco, telefono, es_principal } = req.body;
@@ -29,7 +31,7 @@ const crearContacto = async (req, res) => {
             await db.query('UPDATE contactos_emergencia SET es_prioritario = 0 WHERE usuario_id = ?', [usuario_id]);
         }
 
-        const [result] = await db.query(
+        const [result] = await db.query<ResultSetHeader>(
             'INSERT INTO contactos_emergencia (usuario_id, nombre, parentesco, telefono, es_prioritario) VALUES (?, ?, ?, ?, ?)',
             [usuario_id, nombre, parentesco || '', telefono, principalFlag]
         );
@@ -37,11 +39,11 @@ const crearContacto = async (req, res) => {
         res.status(201).json({ mensaje: 'Contacto creado exitosamente', id: result.insertId });
     } catch (error) {
         console.error('Error al crear contacto:', error);
-        res.status(500).json({ mensaje: 'Error al crear el contacto', error: error.message });
+        res.status(500).json({ mensaje: 'Error al crear el contacto', error: (error as Error).message });
     }
 };
 
-const actualizarContacto = async (req, res) => {
+const actualizarContacto = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const { id } = req.params;
@@ -51,7 +53,7 @@ const actualizarContacto = async (req, res) => {
             return res.status(400).json({ mensaje: 'El nombre y el teléfono son obligatorios' });
         }
 
-        const [existing] = await db.query('SELECT * FROM contactos_emergencia WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
+        const [existing] = await db.query<RowDataPacket[]>('SELECT * FROM contactos_emergencia WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
         if (existing.length === 0) {
             return res.status(404).json({ mensaje: 'Contacto no encontrado o sin permisos' });
         }
@@ -70,16 +72,16 @@ const actualizarContacto = async (req, res) => {
         res.json({ mensaje: 'Contacto actualizado exitosamente' });
     } catch (error) {
         console.error('Error al actualizar contacto:', error);
-        res.status(500).json({ mensaje: 'Error al actualizar el contacto', error: error.message });
+        res.status(500).json({ mensaje: 'Error al actualizar el contacto', error: (error as Error).message });
     }
 };
 
-const eliminarContacto = async (req, res) => {
+const eliminarContacto = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const { id } = req.params;
 
-        const [existing] = await db.query('SELECT * FROM contactos_emergencia WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
+        const [existing] = await db.query<RowDataPacket[]>('SELECT * FROM contactos_emergencia WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
         if (existing.length === 0) {
             return res.status(404).json({ mensaje: 'Contacto no encontrado o sin permisos' });
         }
@@ -88,11 +90,11 @@ const eliminarContacto = async (req, res) => {
         res.json({ mensaje: 'Contacto eliminado exitosamente' });
     } catch (error) {
         console.error('Error al eliminar contacto:', error);
-        res.status(500).json({ mensaje: 'Error al eliminar el contacto', error: error.message });
+        res.status(500).json({ mensaje: 'Error al eliminar el contacto', error: (error as Error).message });
     }
 };
 
-module.exports = {
+export {
     listarContactos,
     crearContacto,
     actualizarContacto,

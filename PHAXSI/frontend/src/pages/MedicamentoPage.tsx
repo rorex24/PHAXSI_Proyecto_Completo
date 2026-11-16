@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { Medicamento } from '../types';
 import {
     apiListarMedicamentos,
     apiCrearMedicamento,
@@ -8,12 +9,12 @@ import {
 } from '../services/api';
 
 export default function MedicamentosPage() {
-    const [medicamentos, setMedicamentos] = useState([]);
+    const [medicamentos, setMedicamentos] = useState<Medicamento[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [mensajeExito, setMensajeExito] = useState('');
     const [showForm, setShowForm] = useState(false);
-    const [editId, setEditId] = useState(null);
+    const [editId, setEditId] = useState<number | null>(null);
     const [form, setForm] = useState({ nombre: '', dosis: '', frecuencia: '', horarios: '', indicaciones: '' });
 
     const cargarMedicamentos = async () => {
@@ -23,7 +24,8 @@ export default function MedicamentosPage() {
             const data = await apiListarMedicamentos();
             setMedicamentos(data);
         } catch (err) {
-            setError(err.message || 'Error al cargar medicamentos');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al cargar medicamentos');
         } finally {
             setLoading(false);
         }
@@ -33,7 +35,7 @@ export default function MedicamentosPage() {
         cargarMedicamentos();
     }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!form.nombre.trim()) {
             setError('El nombre del medicamento es obligatorio');
@@ -54,11 +56,12 @@ export default function MedicamentosPage() {
             cargarMedicamentos();
             setTimeout(() => setMensajeExito(''), 3000);
         } catch (err) {
-            setError(err.message || 'Error al guardar el medicamento');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al guardar el medicamento');
         }
     };
 
-    const handleEditar = (med) => {
+    const handleEditar = (med: Medicamento) => {
         setForm({
             nombre: med.nombre || '',
             dosis: med.dosis || '',
@@ -70,7 +73,7 @@ export default function MedicamentosPage() {
         setShowForm(true);
     };
 
-    const handleEliminar = async (id) => {
+    const handleEliminar = async (id: number) => {
         if (!window.confirm('¿Estás seguro de eliminar este medicamento?')) return;
         try {
             setError(null);
@@ -79,18 +82,20 @@ export default function MedicamentosPage() {
             cargarMedicamentos();
             setTimeout(() => setMensajeExito(''), 3000);
         } catch (err) {
-            setError(err.message || 'Error al eliminar');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al eliminar');
         }
     };
 
-    const handleTomar = async (id) => {
+    const handleTomar = async (id: number) => {
         try {
             setError(null);
             await apiRegistrarToma(id);
             setMensajeExito('¡Toma registrada con éxito!');
             setTimeout(() => setMensajeExito(''), 3000);
         } catch (err) {
-            setError(err.message || 'Error al registrar toma');
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg || 'Error al registrar toma');
         }
     };
 

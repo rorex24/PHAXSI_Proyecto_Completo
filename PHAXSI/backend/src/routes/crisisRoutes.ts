@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const crisisController = require('../controllers/crisisController');
-const authMiddleware = require('../middlewares/authMiddleware');
+import * as crisisController from '../controllers/crisisController';
+import authMiddleware from '../middlewares/authMiddleware';
 
 router.get('/', authMiddleware, crisisController.obtenerCrisis);
 router.post('/', authMiddleware, crisisController.crearCrisis);
 router.delete('/:id', authMiddleware, crisisController.eliminarCrisis);
 
-module.exports = router;
+export default router;

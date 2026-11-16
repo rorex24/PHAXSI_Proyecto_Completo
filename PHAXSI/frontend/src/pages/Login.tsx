@@ -9,14 +9,15 @@ export const Login = () => {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         try {
             await login(email, password);
             navigate('/dashboard');
         } catch (err) {
-            setError(err.message);
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg);
         }
     };
 

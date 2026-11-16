@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const authMiddleware = require('../middlewares/authMiddleware');
-const {
+import authMiddleware from '../middlewares/authMiddleware';
+import {
     listarContactos,
     crearContacto,
     actualizarContacto,
     eliminarContacto
-} = require('../controllers/contactoController');
+} from '../controllers/contactoController';
 
 router.use(authMiddleware);
 
@@ -16,4 +16,4 @@ router.put('/:id', actualizarContacto);
 router.delete('/:id', eliminarContacto);
 
 // DEBE SER EXACTAMENTE ESTO (sin llaves alrededor)
-module.exports = router;
+export default router;

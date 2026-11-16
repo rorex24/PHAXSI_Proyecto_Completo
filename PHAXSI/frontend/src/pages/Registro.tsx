@@ -12,7 +12,7 @@ export const Registro = () => {
     const { registrar } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setExito('');
@@ -27,7 +27,8 @@ export const Registro = () => {
             setExito('Cuenta creada. Redirigiendo al inicio de sesión...');
             setTimeout(() => navigate('/login'), 1200);
         } catch (err) {
-            setError(err.message);
+            const msg = err instanceof Error ? err.message : '';
+            setError(msg);
         }
     };
 

@@ -1,9 +1,11 @@
-const db = require('../config/db');
+import type { ResultSetHeader, RowDataPacket } from 'mysql2';
+import type { Request, Response } from 'express';
+import db from '../config/db';
 
-const obtenerPlan = async (req, res) => {
+const obtenerPlan = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
-        const [rows] = await db.query('SELECT * FROM plan_seguridad WHERE usuario_id = ?', [usuario_id]);
+        const [rows] = await db.query<RowDataPacket[]>('SELECT * FROM plan_seguridad WHERE usuario_id = ?', [usuario_id]);
         
         if (rows.length === 0) {
             return res.json({
@@ -20,11 +22,11 @@ const obtenerPlan = async (req, res) => {
         res.json(rows[0]);
     } catch (error) {
         console.error('Error al obtener plan de seguridad:', error);
-        res.status(500).json({ mensaje: 'Error al obtener el plan de seguridad', error: error.message });
+        res.status(500).json({ mensaje: 'Error al obtener el plan de seguridad', error: (error as Error).message });
     }
 };
 
-const guardarPlan = async (req, res) => {
+const guardarPlan = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const {
@@ -37,7 +39,7 @@ const guardarPlan = async (req, res) => {
             notas
         } = req.body;
 
-        const [existing] = await db.query('SELECT id FROM plan_seguridad WHERE usuario_id = ?', [usuario_id]);
+        const [existing] = await db.query<RowDataPacket[]>('SELECT id FROM plan_seguridad WHERE usuario_id = ?', [usuario_id]);
 
         if (existing.length === 0) {
             await db.query(
@@ -56,11 +58,11 @@ const guardarPlan = async (req, res) => {
         res.json({ mensaje: 'Plan de seguridad guardado exitosamente' });
     } catch (error) {
         console.error('Error al guardar plan de seguridad:', error);
-        res.status(500).json({ mensaje: 'Error al guardar el plan de seguridad', error: error.message });
+        res.status(500).json({ mensaje: 'Error al guardar el plan de seguridad', error: (error as Error).message });
     }
 };
 
-module.exports = {
+export {
     obtenerPlan,
     guardarPlan
 };

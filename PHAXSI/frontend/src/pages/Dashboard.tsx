@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import type { Contacto, Crisis, Medicamento } from '../types';
 import { AuthContext } from '../context/AuthContext';
 import { fetchCrisis, fetchMedicamentos, fetchContactos } from '../services/api';
 import { Activity, Pill, Phone, Shield } from 'lucide-react';
@@ -6,9 +7,9 @@ import { Link } from 'react-router-dom';
 
 export const Dashboard = () => {
     const { usuario } = useContext(AuthContext);
-    const [crisis, setCrisis] = useState([]);
-    const [medicamentos, setMedicamentos] = useState([]);
-    const [contactos, setContactos] = useState([]);
+    const [crisis, setCrisis] = useState<Crisis[]>([]);
+    const [medicamentos, setMedicamentos] = useState<Medicamento[]>([]);
+    const [contactos, setContactos] = useState<Contacto[]>([]);
 
     useEffect(() => {
         fetchCrisis().then(setCrisis).catch(console.error);

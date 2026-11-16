@@ -1,20 +1,22 @@
-const db = require('../config/db');
+import type { ResultSetHeader, RowDataPacket } from 'mysql2';
+import type { Request, Response } from 'express';
+import db from '../config/db';
 
-const listarMedicamentos = async (req, res) => {
+const listarMedicamentos = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
-        const [rows] = await db.query(
+        const [rows] = await db.query<RowDataPacket[]>(
             'SELECT id, usuario_id, nombre_medicamento AS nombre, dosis, frecuencia, horarios, instrucciones AS indicaciones, activo, creado_en FROM medicamentos WHERE usuario_id = ? ORDER BY id DESC',
             [usuario_id]
         );
         res.json(rows);
     } catch (error) {
         console.error('Error al listar medicamentos:', error);
-        res.status(500).json({ mensaje: 'Error al obtener los medicamentos', error: error.message });
+        res.status(500).json({ mensaje: 'Error al obtener los medicamentos', error: (error as Error).message });
     }
 };
 
-const crearMedicamento = async (req, res) => {
+const crearMedicamento = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const { nombre, dosis, frecuencia, horarios, indicaciones } = req.body;
@@ -23,7 +25,7 @@ const crearMedicamento = async (req, res) => {
             return res.status(400).json({ mensaje: 'El nombre del medicamento es obligatorio' });
         }
 
-        const [result] = await db.query(
+        const [result] = await db.query<ResultSetHeader>(
             'INSERT INTO medicamentos (usuario_id, nombre_medicamento, dosis, frecuencia, horarios, instrucciones) VALUES (?, ?, ?, ?, ?, ?)',
             [usuario_id, nombre, dosis || '', frecuencia || '', horarios || '', indicaciones || '']
         );
@@ -31,11 +33,11 @@ const crearMedicamento = async (req, res) => {
         res.status(201).json({ mensaje: 'Medicamento creado exitosamente', id: result.insertId });
     } catch (error) {
         console.error('Error al crear medicamento:', error);
-        res.status(500).json({ mensaje: 'Error al crear el medicamento', error: error.message });
+        res.status(500).json({ mensaje: 'Error al crear el medicamento', error: (error as Error).message });
     }
 };
 
-const actualizarMedicamento = async (req, res) => {
+const actualizarMedicamento = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const { id } = req.params;
@@ -45,7 +47,7 @@ const actualizarMedicamento = async (req, res) => {
             return res.status(400).json({ mensaje: 'El nombre del medicamento es obligatorio' });
         }
 
-        const [existing] = await db.query('SELECT * FROM medicamentos WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
+        const [existing] = await db.query<RowDataPacket[]>('SELECT * FROM medicamentos WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
         if (existing.length === 0) {
             return res.status(404).json({ mensaje: 'Medicamento no encontrado o sin permisos' });
         }
@@ -58,16 +60,16 @@ const actualizarMedicamento = async (req, res) => {
         res.json({ mensaje: 'Medicamento actualizado exitosamente' });
     } catch (error) {
         console.error('Error al actualizar medicamento:', error);
-        res.status(500).json({ mensaje: 'Error al actualizar el medicamento', error: error.message });
+        res.status(500).json({ mensaje: 'Error al actualizar el medicamento', error: (error as Error).message });
     }
 };
 
-const eliminarMedicamento = async (req, res) => {
+const eliminarMedicamento = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const { id } = req.params;
 
-        const [existing] = await db.query('SELECT * FROM medicamentos WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
+        const [existing] = await db.query<RowDataPacket[]>('SELECT * FROM medicamentos WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
         if (existing.length === 0) {
             return res.status(404).json({ mensaje: 'Medicamento no encontrado o sin permisos' });
         }
@@ -76,17 +78,17 @@ const eliminarMedicamento = async (req, res) => {
         res.json({ mensaje: 'Medicamento eliminado exitosamente' });
     } catch (error) {
         console.error('Error al eliminar medicamento:', error);
-        res.status(500).json({ mensaje: 'Error al eliminar el medicamento', error: error.message });
+        res.status(500).json({ mensaje: 'Error al eliminar el medicamento', error: (error as Error).message });
     }
 };
 
-const registrarToma = async (req, res) => {
+const registrarToma = async (req: Request, res: Response) => {
     try {
         const usuario_id = req.user.id;
         const { id } = req.params;
         const fecha_hora = new Date();
 
-        const [existing] = await db.query('SELECT * FROM medicamentos WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
+        const [existing] = await db.query<RowDataPacket[]>('SELECT * FROM medicamentos WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
         if (existing.length === 0) {
             return res.status(404).json({ mensaje: 'Medicamento no encontrado o sin permisos' });
         }
@@ -99,11 +101,11 @@ const registrarToma = async (req, res) => {
         res.status(201).json({ mensaje: 'Toma registrada exitosamente', fecha_hora });
     } catch (error) {
         console.error('Error al registrar toma:', error);
-        res.status(500).json({ mensaje: 'Error al registrar la toma', error: error.message });
+        res.status(500).json({ mensaje: 'Error al registrar la toma', error: (error as Error).message });
     }
 };
 
-module.exports = {
+export {
     listarMedicamentos,
     crearMedicamento,
     actualizarMedicamento,

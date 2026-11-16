@@ -1,6 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.1.157:5000/api';
+import type { Contacto, ContactoPayload, Crisis, CrisisPayload, LoginResponse, Medicamento, MedicamentoPayload, PlanSeguridad, RegistroPayload } from '../types';
 
-const getHeaders = () => {
+const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.0.14:5000/api';
+
+const getHeaders = (): HeadersInit => {
     const token = localStorage.getItem('token');
     return {
         'Content-Type': 'application/json',
@@ -8,13 +10,13 @@ const getHeaders = () => {
     };
 };
 
-const handleResponse = async (res) => {
+const handleResponse = async <T = any>(res: Response): Promise<T> => {
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.mensaje || 'Error en la solicitud');
-    return data;
+    return data as T;
 };
 
-export const loginUsuario = async (email, password) => {
+export const loginUsuario = async (email: string, password: string): Promise<LoginResponse> => {
     const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,7 +27,7 @@ export const loginUsuario = async (email, password) => {
     return data;
 };
 
-export const registrarUsuario = async (datos) => {
+export const registrarUsuario = async (datos: RegistroPayload) => {
     const res = await fetch(`${API_URL}/auth/registro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -36,12 +38,12 @@ export const registrarUsuario = async (datos) => {
     return data;
 };
 
-export const fetchCrisis = async () => {
+export const fetchCrisis = async (): Promise<Crisis[]> => {
     const res = await fetch(`${API_URL}/crisis`, { headers: getHeaders() });
-    return await res.json();
+    return (await res.json()) as Crisis[];
 };
 
-export const crearCrisis = async (datos) => {
+export const crearCrisis = async (datos: CrisisPayload) => {
     const res = await fetch(`${API_URL}/crisis`, {
         method: 'POST',
         headers: getHeaders(),
@@ -51,12 +53,12 @@ export const crearCrisis = async (datos) => {
 };
 
 // Medicamentos
-export const apiListarMedicamentos = async () => {
+export const apiListarMedicamentos = async (): Promise<Medicamento[]> => {
     const res = await fetch(`${API_URL}/medicamentos`, { headers: getHeaders() });
-    return handleResponse(res);
+    return handleResponse<Medicamento[]>(res);
 };
 
-export const apiCrearMedicamento = async (payload) => {
+export const apiCrearMedicamento = async (payload: MedicamentoPayload) => {
     const res = await fetch(`${API_URL}/medicamentos`, {
         method: 'POST',
         headers: getHeaders(),
@@ -65,7 +67,7 @@ export const apiCrearMedicamento = async (payload) => {
     return handleResponse(res);
 };
 
-export const apiActualizarMedicamento = async (id, payload) => {
+export const apiActualizarMedicamento = async (id: number, payload: MedicamentoPayload) => {
     const res = await fetch(`${API_URL}/medicamentos/${id}`, {
         method: 'PUT',
         headers: getHeaders(),
@@ -74,7 +76,7 @@ export const apiActualizarMedicamento = async (id, payload) => {
     return handleResponse(res);
 };
 
-export const apiEliminarMedicamento = async (id) => {
+export const apiEliminarMedicamento = async (id: number) => {
     const res = await fetch(`${API_URL}/medicamentos/${id}`, {
         method: 'DELETE',
         headers: getHeaders()
@@ -82,7 +84,7 @@ export const apiEliminarMedicamento = async (id) => {
     return handleResponse(res);
 };
 
-export const apiRegistrarToma = async (id) => {
+export const apiRegistrarToma = async (id: number) => {
     const res = await fetch(`${API_URL}/medicamentos/${id}/tomar`, {
         method: 'POST',
         headers: getHeaders()
@@ -91,12 +93,12 @@ export const apiRegistrarToma = async (id) => {
 };
 
 // Contactos
-export const apiListarContactos = async () => {
+export const apiListarContactos = async (): Promise<Contacto[]> => {
     const res = await fetch(`${API_URL}/contactos`, { headers: getHeaders() });
-    return handleResponse(res);
+    return handleResponse<Contacto[]>(res);
 };
 
-export const apiCrearContacto = async (payload) => {
+export const apiCrearContacto = async (payload: ContactoPayload) => {
     const res = await fetch(`${API_URL}/contactos`, {
         method: 'POST',
         headers: getHeaders(),
@@ -105,7 +107,7 @@ export const apiCrearContacto = async (payload) => {
     return handleResponse(res);
 };
 
-export const apiActualizarContacto = async (id, payload) => {
+export const apiActualizarContacto = async (id: number, payload: ContactoPayload) => {
     const res = await fetch(`${API_URL}/contactos/${id}`, {
         method: 'PUT',
         headers: getHeaders(),
@@ -114,7 +116,7 @@ export const apiActualizarContacto = async (id, payload) => {
     return handleResponse(res);
 };
 
-export const apiEliminarContacto = async (id) => {
+export const apiEliminarContacto = async (id: number) => {
     const res = await fetch(`${API_URL}/contactos/${id}`, {
         method: 'DELETE',
         headers: getHeaders()
@@ -123,12 +125,12 @@ export const apiEliminarContacto = async (id) => {
 };
 
 // Plan de Seguridad
-export const apiObtenerPlanSeguridad = async () => {
+export const apiObtenerPlanSeguridad = async (): Promise<PlanSeguridad> => {
     const res = await fetch(`${API_URL}/plan-seguridad`, { headers: getHeaders() });
-    return handleResponse(res);
+    return handleResponse<PlanSeguridad>(res);
 };
 
-export const apiGuardarPlanSeguridad = async (payload) => {
+export const apiGuardarPlanSeguridad = async (payload: PlanSeguridad) => {
     const res = await fetch(`${API_URL}/plan-seguridad`, {
         method: 'PUT',
         headers: getHeaders(),

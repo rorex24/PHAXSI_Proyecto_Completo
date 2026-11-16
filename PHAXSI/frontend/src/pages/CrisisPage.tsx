@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCrisis, crearCrisis } from '../services/api';
+import type { Crisis, CrisisPayload } from '../types';
 
 export const CrisisPage = () => {
-    const [crisisList, setCrisisList] = useState([]);
-    const [formData, setFormData] = useState({
+    const [crisisList, setCrisisList] = useState<Crisis[]>([]);
+    const [formData, setFormData] = useState<CrisisPayload>({
         fecha_hora: '',
         duracion_minutos: 1,
         tipo_crisis: 'Tónico-Clónica',
@@ -21,7 +22,7 @@ export const CrisisPage = () => {
         setCrisisList(datos);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await crearCrisis(formData);
         setFormData({ fecha_hora: '', duracion_minutos: 1, tipo_crisis: 'Tónico-Clónica', sintomas: '', desencadenantes: '', observaciones: '' });
