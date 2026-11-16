@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
-import { Navbar } from './components/Navbar';
+import AppLayout from './components/AppLayout';
 import { Login } from './pages/Login';
 import { Registro } from './pages/Registro';
 import { Perfil } from './pages/Perfil';
@@ -19,9 +19,7 @@ export default function App() {
         <AuthProvider>
             <Router>
                 <ErrorBoundary>
-                    <div className="app-container">
-                        <Navbar />
-                        <main className="main-content">
+                    <AppLayout>
                             <Routes>
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/registro" element={<Registro />} />
@@ -35,8 +33,7 @@ export default function App() {
                                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                                 <Route path="*" element={<div style={{ padding: '2rem' }}><h2>404 - Página no encontrada</h2></div>} />
                             </Routes>
-                        </main>
-                    </div>
+                    </AppLayout>
                 </ErrorBoundary>
             </Router>
         </AuthProvider>

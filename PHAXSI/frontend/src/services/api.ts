@@ -1,4 +1,4 @@
-import type { Contacto, ContactoPayload, Crisis, CrisisPayload, LoginResponse, Medicamento, MedicamentoPayload, PlanSeguridad, RegistroPayload } from '../types';
+import type { Contacto, ContactoPayload, Crisis, CrisisPayload, LoginResponse, Medicamento, MedicamentoPayload, PlanSeguridad, RegistroPayload, RegistroToma } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.0.14:5000/api';
 
@@ -90,6 +90,11 @@ export const apiRegistrarToma = async (id: number) => {
         headers: getHeaders()
     });
     return handleResponse(res);
+};
+
+export const apiListarTomas = async (desde: Date): Promise<RegistroToma[]> => {
+    const res = await fetch(`${API_URL}/medicamentos/tomas?desde=${encodeURIComponent(desde.toISOString())}`, { headers: getHeaders() });
+    return handleResponse<RegistroToma[]>(res);
 };
 
 // Contactos

@@ -9,7 +9,8 @@ import {
     crearMedicamento,
     actualizarMedicamento,
     eliminarMedicamento,
-    registrarToma
+    registrarToma,
+    listarTomas
 } from '../controllers/medicamentoController';
 
 // Verificamos que authMiddleware exista antes de usarlo para evitar que falle Express
@@ -18,6 +19,7 @@ if (authMiddleware) {
 }
 
 router.get('/', listarMedicamentos);
+router.get('/tomas', listarTomas);
 router.post('/', crearMedicamento);
 router.put('/:id', actualizarMedicamento);
 router.delete('/:id', eliminarMedicamento);

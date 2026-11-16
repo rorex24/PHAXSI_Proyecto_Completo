@@ -42,6 +42,14 @@ export interface Medicamento {
     frecuencia?: string;
     horarios?: string;
     indicaciones?: string;
+    activo?: boolean | number;
+}
+
+export interface RegistroToma {
+    id: number;
+    medicamento_id: number;
+    fecha_hora: string;
+    tomado?: boolean | number;
 }
 
 export type MedicamentoPayload = Omit<Medicamento, 'id'>;

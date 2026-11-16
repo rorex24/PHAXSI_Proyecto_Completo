@@ -105,7 +105,38 @@ const registrarToma = async (req: Request, res: Response) => {
     }
 };
 
+// Solo lectura: tomas registradas desde una fecha (por defecto, desde las 00:00 de hoy del servidor).
+// El cliente envía ?desde=<ISO> con su medianoche local para evitar desfases de zona horaria.
+const listarTomas = async (req: Request, res: Response) => {
+    try {
+        const usuario_id = req.user.id;
+        let desde = new Date();
+        if (typeof req.query.desde === 'string' && req.query.desde) {
+            desde = new Date(req.query.desde);
+            if (isNaN(desde.getTime())) {
+                return res.status(400).json({ mensaje: 'Parámetro "desde" inválido' });
+            }
+        } else {
+            desde.setHours(0, 0, 0, 0);
+        }
+
+        const [rows] = await db.query<RowDataPacket[]>(
+            `SELECT r.id, r.medicamento_id, r.fecha_hora, r.tomado
+             FROM registros_medicamentos r
+             INNER JOIN medicamentos m ON m.id = r.medicamento_id
+             WHERE m.usuario_id = ? AND r.fecha_hora >= ?
+             ORDER BY r.fecha_hora DESC`,
+            [usuario_id, desde]
+        );
+        res.json(rows);
+    } catch (error) {
+        console.error('Error al listar tomas:', error);
+        res.status(500).json({ mensaje: 'Error al obtener las tomas', error: (error as Error).message });
+    }
+};
+
 export {
+    listarTomas,
     listarMedicamentos,
     crearMedicamento,
     actualizarMedicamento,

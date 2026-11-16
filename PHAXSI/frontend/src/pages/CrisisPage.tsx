@@ -64,7 +64,7 @@ export const CrisisPage = () => {
                     <button type="submit" className="btn btn-primary">Guardar Registro</button>
                 </form>
 
-                <div>
+                <div id="historial">
                     <h3>Historial de Eventos</h3>
                     {crisisList.map(c => (
                         <div key={c.id} className="card">
