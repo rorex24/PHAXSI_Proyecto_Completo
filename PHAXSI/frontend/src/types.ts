@@ -64,6 +64,30 @@ export interface Contacto {
 
 export type ContactoPayload = Omit<Contacto, 'id'>;
 
+export interface Perfil {
+    id: number;
+    nombre: string;
+    email: string;
+    rol?: string;
+    telefono: string | null;
+    fecha_nacimiento: string | null;
+    tipo_sangre: string | null;
+    condiciones_adicionales: string | null;
+    alergias: string | null;
+    contacto_medico: string | null;
+    creado_en?: string;
+}
+
+export interface PerfilPayload {
+    nombre: string;
+    telefono: string;
+    fecha_nacimiento: string;
+    tipo_sangre: string;
+    condiciones_adicionales: string;
+    alergias: string;
+    contacto_medico: string;
+}
+
 export interface PlanSeguridad {
     pasos_crisis: string;
     cuando_llamar: string;

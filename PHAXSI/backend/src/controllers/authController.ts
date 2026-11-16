@@ -62,7 +62,81 @@ const login = async (req: Request, res: Response) => {
     }
 };
 
+const TIPOS_SANGRE = ['', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+const COLUMNAS_PERFIL =
+    "id, nombre, email, rol, telefono, DATE_FORMAT(fecha_nacimiento, '%Y-%m-%d') AS fecha_nacimiento, tipo_sangre, condiciones_adicionales, alergias, contacto_medico, creado_en";
+
+// Perfil del usuario autenticado (nunca devuelve la contraseña).
+const obtenerPerfil = async (req: Request, res: Response) => {
+    try {
+        const [rows] = await db.query<RowDataPacket[]>(`SELECT ${COLUMNAS_PERFIL} FROM usuarios WHERE id = ?`, [req.user.id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al obtener perfil:', error);
+        res.status(500).json({ mensaje: 'Error al obtener el perfil', error: (error as Error).message });
+    }
+};
+
+const actualizarPerfil = async (req: Request, res: Response) => {
+    try {
+        const { nombre, telefono, fecha_nacimiento, tipo_sangre, condiciones_adicionales, alergias, contacto_medico } = req.body;
+
+        if (typeof nombre !== 'string' || !nombre.trim()) {
+            return res.status(400).json({ mensaje: 'El nombre es obligatorio' });
+        }
+        if (nombre.trim().length > 100) {
+            return res.status(400).json({ mensaje: 'El nombre no puede superar 100 caracteres' });
+        }
+
+        const tel = typeof telefono === 'string' ? telefono.trim() : '';
+        if (tel && !/^\+?[0-9\s-]{7,30}$/.test(tel)) {
+            return res.status(400).json({ mensaje: 'Formato de teléfono inválido (ej. +591 70000000)' });
+        }
+
+        const sangre = typeof tipo_sangre === 'string' ? tipo_sangre.trim() : '';
+        if (!TIPOS_SANGRE.includes(sangre)) {
+            return res.status(400).json({ mensaje: 'Tipo de sangre inválido' });
+        }
+
+        let fecha: string | null = null;
+        if (typeof fecha_nacimiento === 'string' && fecha_nacimiento.trim()) {
+            const f = fecha_nacimiento.trim();
+            const d = new Date(`${f}T00:00:00`);
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(f) || isNaN(d.getTime()) || d > new Date() || d.getFullYear() < 1900) {
+                return res.status(400).json({ mensaje: 'Fecha de nacimiento inválida' });
+            }
+            fecha = f;
+        }
+
+        const texto = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+        const condiciones = texto(condiciones_adicionales);
+        const alerg = texto(alergias);
+        const medico = texto(contacto_medico);
+        if (condiciones.length > 2000 || alerg.length > 2000 || medico.length > 2000) {
+            return res.status(400).json({ mensaje: 'Los textos no pueden superar 2000 caracteres' });
+        }
+
+        await db.query(
+            `UPDATE usuarios SET nombre = ?, telefono = ?, fecha_nacimiento = ?, tipo_sangre = ?,
+             condiciones_adicionales = ?, alergias = ?, contacto_medico = ? WHERE id = ?`,
+            [nombre.trim(), tel || null, fecha, sangre || null, condiciones || null, alerg || null, medico || null, req.user.id]
+        );
+
+        const [rows] = await db.query<RowDataPacket[]>(`SELECT ${COLUMNAS_PERFIL} FROM usuarios WHERE id = ?`, [req.user.id]);
+        res.json({ mensaje: 'Perfil actualizado exitosamente', perfil: rows[0] });
+    } catch (error) {
+        console.error('Error al actualizar perfil:', error);
+        res.status(500).json({ mensaje: 'Error al actualizar el perfil', error: (error as Error).message });
+    }
+};
+
 export {
     registrar,
-    login
+    login,
+    obtenerPerfil,
+    actualizarPerfil
 };

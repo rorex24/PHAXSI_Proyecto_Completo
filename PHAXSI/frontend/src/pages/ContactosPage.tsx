@@ -109,7 +109,7 @@ export default function ContactosPage() {
                         setEditId(null);
                         setForm({ nombre: '', parentesco: '', telefono: '', es_principal: false });
                     }}
-                    style={{ padding: '0.6rem 1.2rem', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                    style={{ padding: '0.6rem 1.2rem', minHeight: '44px', background: '#6D28D9', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
                 >
                     {showForm ? 'Cancelar' : '+ Añadir contacto'}
                 </button>
@@ -162,7 +162,7 @@ export default function ContactosPage() {
                         />
                         <label htmlFor="es_principal" style={{ fontWeight: 'bold', cursor: 'pointer' }}>Marcar como contacto principal</label>
                     </div>
-                    <button type="submit" style={{ padding: '0.6rem 1.2rem', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+                    <button type="submit" style={{ padding: '0.6rem 1.2rem', minHeight: '44px', background: '#6D28D9', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
                         {editId ? 'Guardar Cambios' : 'Guardar Contacto'}
                     </button>
                 </form>
@@ -180,17 +180,17 @@ export default function ContactosPage() {
                                 </h4>
                                 <p style={{ margin: '0.2rem 0', color: '#475569' }}><strong>Relación:</strong> {con.parentesco || 'No especificada'}</p>
                                 <p style={{ margin: '0.2rem 0', color: '#475569' }}>
-                                    <strong>Teléfono:</strong> <a href={`tel:${con.telefono}`} style={{ color: '#2563eb', fontWeight: 'bold', textDecoration: 'none' }}>{con.telefono}</a>
+                                    <strong>Teléfono:</strong> <a href={`tel:${con.telefono}`} style={{ color: '#5B21B6', fontWeight: 'bold', textDecoration: 'none' }}>{con.telefono}</a>
                                 </p>
                             </div>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                <a href={`tel:${con.telefono}`} style={{ padding: '0.4rem 0.8rem', background: '#16a34a', color: '#fff', borderRadius: '4px', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}>
+                                <a href={`tel:${con.telefono}`} style={{ padding: '0.5rem 0.9rem', minHeight: '44px', background: '#6D28D9', color: '#fff', borderRadius: '4px', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}>
                                     📞 Llamar
                                 </a>
-                                <button onClick={() => handleEditar(con)} style={{ padding: '0.4rem 0.8rem', background: '#e2e8f0', color: '#1e293b', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                                <button onClick={() => handleEditar(con)} style={{ padding: '0.5rem 0.9rem', minHeight: '44px', background: '#EDE9FE', color: '#2E1065', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
                                     Editar
                                 </button>
-                                <button onClick={() => handleEliminar(con.id)} style={{ padding: '0.4rem 0.8rem', background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                                <button onClick={() => handleEliminar(con.id)} style={{ padding: '0.5rem 0.9rem', minHeight: '44px', background: '#fee2e2', color: '#b91c1c', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
                                     Eliminar
                                 </button>
                             </div>

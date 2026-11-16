@@ -1,4 +1,4 @@
-import type { Contacto, ContactoPayload, Crisis, CrisisPayload, LoginResponse, Medicamento, MedicamentoPayload, PlanSeguridad, RegistroPayload, RegistroToma } from '../types';
+import type { Contacto, ContactoPayload, Crisis, CrisisPayload, LoginResponse, Medicamento, MedicamentoPayload, Perfil, PerfilPayload, PlanSeguridad, RegistroPayload, RegistroToma } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.0.14:5000/api';
 
@@ -125,6 +125,21 @@ export const apiEliminarContacto = async (id: number) => {
     const res = await fetch(`${API_URL}/contactos/${id}`, {
         method: 'DELETE',
         headers: getHeaders()
+    });
+    return handleResponse(res);
+};
+
+// Perfil
+export const apiObtenerPerfil = async (): Promise<Perfil> => {
+    const res = await fetch(`${API_URL}/auth/perfil`, { headers: getHeaders() });
+    return handleResponse<Perfil>(res);
+};
+
+export const apiGuardarPerfil = async (payload: PerfilPayload): Promise<{ mensaje: string; perfil: Perfil }> => {
+    const res = await fetch(`${API_URL}/auth/perfil`, {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify(payload)
     });
     return handleResponse(res);
 };

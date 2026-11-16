@@ -7,6 +7,8 @@ export interface AuthContextType {
     login: (email: string, password: string) => Promise<LoginResponse>;
     registrar: (datos: RegistroPayload) => Promise<unknown>;
     logout: () => void;
+    /** Actualiza los datos básicos de la sesión (p. ej. el nombre tras editar el perfil). */
+    actualizarUsuario: (datos: Partial<Usuario>) => void;
     cargando: boolean;
 }
 
@@ -43,8 +45,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUsuario(null);
     };
 
+    const actualizarUsuario = (datos: Partial<Usuario>) => {
+        setUsuario(prev => {
+            if (!prev) return prev;
+            const nuevo = { ...prev, ...datos };
+            localStorage.setItem('usuario', JSON.stringify(nuevo));
+            return nuevo;
+        });
+    };
+
     return (
-        <AuthContext.Provider value={{ usuario, login, registrar, logout, cargando }}>
+        <AuthContext.Provider value={{ usuario, login, registrar, logout, actualizarUsuario, cargando }}>
             {children}
         </AuthContext.Provider>
     );

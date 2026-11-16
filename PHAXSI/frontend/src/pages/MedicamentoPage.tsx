@@ -113,7 +113,7 @@ export default function MedicamentosPage() {
                         setEditId(null);
                         setForm({ nombre: '', dosis: '', frecuencia: '', horarios: '', indicaciones: '' });
                     }}
-                    style={{ padding: '0.6rem 1.2rem', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                    style={{ padding: '0.6rem 1.2rem', minHeight: '44px', background: '#6D28D9', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
                 >
                     {showForm ? 'Cancelar' : '+ Añadir medicamento'}
                 </button>
@@ -175,7 +175,7 @@ export default function MedicamentosPage() {
                             placeholder="Ej. Tomar con alimentos"
                         />
                     </div>
-                    <button type="submit" style={{ padding: '0.6rem 1.2rem', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+                    <button type="submit" style={{ padding: '0.6rem 1.2rem', minHeight: '44px', background: '#6D28D9', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
                         {editId ? 'Guardar Cambios' : 'Registrar Medicamento'}
                     </button>
                 </form>
@@ -193,13 +193,13 @@ export default function MedicamentosPage() {
                             <p style={{ margin: '0.2rem 0', color: '#475569' }}><strong>Horarios:</strong> {med.horarios || 'No especificados'}</p>
                             {med.indicaciones && <p style={{ margin: '0.2rem 0', color: '#475569' }}><strong>Indicaciones:</strong> {med.indicaciones}</p>}
                             <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                <button onClick={() => handleTomar(med.id)} style={{ padding: '0.4rem 0.8rem', background: '#0284c7', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                                <button onClick={() => handleTomar(med.id)} style={{ padding: '0.5rem 0.9rem', minHeight: '44px', background: '#6D28D9', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
                                     ✓ Marcar como tomado
                                 </button>
-                                <button onClick={() => handleEditar(med)} style={{ padding: '0.4rem 0.8rem', background: '#e2e8f0', color: '#1e293b', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                                <button onClick={() => handleEditar(med)} style={{ padding: '0.5rem 0.9rem', minHeight: '44px', background: '#EDE9FE', color: '#2E1065', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
                                     Editar
                                 </button>
-                                <button onClick={() => handleEliminar(med.id)} style={{ padding: '0.4rem 0.8rem', background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
+                                <button onClick={() => handleEliminar(med.id)} style={{ padding: '0.5rem 0.9rem', minHeight: '44px', background: '#fee2e2', color: '#b91c1c', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}>
                                     Eliminar
                                 </button>
                             </div>
